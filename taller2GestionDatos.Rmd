@@ -93,8 +93,19 @@ de las variables se relaciona a continuación:
 | Dir Viento (Grados)       | Contínua          | Dirección del viento                                         |
 | Temperatura (C°)          | Contínua          | Temperatura en grados celsius                                |
 | Humedad (%)               | Contínua          | Porcentaje de humedad                                        |
-| Radiacion Solar (Watt/M2) | Contínua          | Radiación Solar                                              |
-| Lluvia (mm)               | Contínua          | Cantidad de precipitaciones                                  |}
+| Radiacion Solar           | Contínua          | Radiación Solar (Watt/M2)                                    |
+| Lluvia (mm)               | Contínua          | Cantidad de precipitaciones                                  |
+
+### Resumen de frecuencia de valores en las variables
+
+Con el fin de identificar los posibles valores en las variables, la frecuencia de dichos valores de forma general y detectar valores ausentes
+se realiza la siguiente exploración mediante la exposición y resumen. Con el fin de facilitar su visualización
+se realiza una partición por cada 3 variables, utilizando la función summary del lenguaje R.
+
+En las siguientes listas, se puede apreciar una cantidad significativa de registros con ausencia de valor numérico o valores en cero, con diferentes magnitudes de frecuencia entre las
+diferentes variables. Según los boletines emitidos por la SVCASC, dichos datos faltantes pueden estar relacionados a las anomalías que se dan en las estaciones de monitoreo, tales como: Fallas en los equipos, falta de energía eléctrica en la zona, hurto de equipos o cableado, mantenimiento o cambio de equipos y la inclusión o exclusión de algunos contaminantes o variables meteorológicas. Por otra parte, se puede evidenciar que existe más de un registro con  misma fecha y hora, lo que puede sugerir un proceso de limpieza en el que se excluirían dichos registros duplicados. Este procedimiento, se verá con más detalle
+en la sección 2.
+
 
 ```{r , echo=T, eval= T}
 summary(datos_base_flora[1:3])
@@ -112,19 +123,20 @@ summary(datos_base_flora[7:9])
 summary(datos_base_flora[10:12])
 ```
 
-El DAGMA mediante el grupo de calidad del aire en el transcurso de los años ha trabajado en robustecer el sistema de calidad del aire para garantizar la continuidad en los datos, sin embargo es normal que los sistemas de monitoreo de calidad del aire presenten discontinuidad en los datos (datos faltantes o espacios en blanco) debido a dos situaciones: la primera corresponde a las anomalías que se dan en las estaciones de monitoreo, tales como: Fallas en los equipos, falta de energía eléctrica en la zona, hurto de equipos o cableado, mantenimiento o cambio de equipos, etc y la segunda causa corresponde a la inclusión o exclusión de algunos contaminantes o variables meteorológicas, según criterio de los expertos y característica de la zona a monitorear.
+### Métricas de tendencia central
+ histogramas
+ 
+### Métricas de dispersión
+ Diagramas de caja
 
-```{r , echo=F, eval= T}
+```{r , echo=T, eval= T}
 library(psych)
 estadisticas <- describe(datos_base_flora)
-estadisticas$mean
+estadisticas
 ```
 
 
-
-### Métricas de tendencia central
-### Métricas de dispersión
-### Visualización de métricas de dispersión
+ 
 ### Análisis de las visualizaciones
 ### Análisis de Correlación
 
