@@ -10,7 +10,7 @@ output:
   pdf_document: default
   word_document: default
 link-citations: yes
-subtitle: Calidad de aire - Estación La Flora Santiago de Cali
+subtitle: Calidad del aire - Estación La Flora Santiago de Cali
 tags:
 - data preparation
 - data cleaning
@@ -22,36 +22,97 @@ bibliography: references.bib
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# 1. Introducción
+# Introducción
 
-## Contextualización 
+La **calidad del aire**, se define como la cantidad general de polución presente en 
+un area y como la pureza promedio atmosférica en relación a las medidas de 
+descarga tomadas de una fuente de polución [@DEFAIRQ2007]. La contaminación del 
+aire, representa un importante riesgo medioambiental para la salud, bien sea en 
+los países desarrollados o en los países en desarrollo ya que es evidenciado en 
+casos en morbilidad por trastornos cerebrovasculares, cánceres de pulmón y neumopatías 
+crónicas y agudas. Por lo tanto, cuanto más bajos sean los niveles de contaminación del aire, 
+mejor será la salud cardiovascular y respiratoria de la población a largo y a corto plazo [@OMS2016].
 
-La estación La Flora ubicada en el norte de la ciudad de Santiago de Cali, es una estación automática que reporta información horaria al centro de control del DAGMA. Mide los niveles de Material Particulado Menor a 10 micrómetros (PM10), Dióxido de Azufre (SO2), Dióxido de Nitrógeno (NO2), Monóxido de Carbono (CO), Ozono (O3) y variables meteorológicas como velocidad del viento, dirección del viento, temperatura, humedad, radiación solar y precipitación.
+De los 23 países de América Latina y el Caribe, 18 tienen sus propias regulaciones 
+vigentes en la actualidad relacionadas con la calidad del aire, que son de acceso 
+público en los sitios web oficiales [@INSAIRQ2016]. La trazabilidad para tales regulaciones se 
+establece para los contaminantes de criterio (PM10, PM2.5, SO2, NO2, O-3, CO), 
+utilizando como referencia la secuencia histórica de estándares de la 
+Agencia de Protección Ambiental de los Estados Unidos [@USEPA2019] y los valores de 
+referencia de La Organización Mundial de la Salud [@OMS2019]. 
 
-La estación Escuela República de Argentina ubicada en el centro de la ciudad de Santiago de Cali, es una estación automática que reporta información horaria al centro de control del DAGMA. Mide los niveles de Material Particulado Menor a 10 micrómetros (PM10), Dióxido de Azufre (SO2), Dióxido de Nitrógeno (NO2), Monóxido de Carbono (CO) y variables meteorológicas como velocidad del viento, dirección del viento, temperatura, humedad, radiación solar y precipitación.
-El DAGMA mediante el grupo de calidad del aire en el transcurso de los años ha trabajado en robustecer el sistema de calidad del aire para garantizar la continuidad en los datos, sin embargo es normal que los sistemas de monitoreo de calidad del aire presenten discontinuidad en los datos (datos faltantes o espacios en blanco) debido a dos situaciones: la primera corresponde a las anomalías que se dan en las estaciones de monitoreo, tales como: Fallas en los equipos, falta de energía eléctrica en la zona, hurto de equipos o cableado, mantenimiento o cambio de equipos, etc y la segunda causa corresponde a la inclusión o exclusión de algunos contaminantes o variables meteorológicas, según criterio de los expertos y característica de la zona a monitorear.
+En Colombia, el Sistema de Vigilancia de la Calidad del Aire de Cali [@SVCAC2019], opera 
+bajo la coordinación y administración del Departamento Administrativo de Gestión 
+del Medio Ambiente [@DAGMA2019],Grupo de Calidad del Aire. El Sistema de Vigilancia de Calidad del Aire de
+Santiago de Cali SVCASC fue acreditado en la norma NTC-ISO/IEC 17025 del año 2005 por el
+IDEAM a través de la Resolución 1328 del 23 de junio de 2018. El SVCASC actualmente 
+funciona con nueve (9) estaciones: La estación La Flora, ubicada en el barrio La Flora en la zona norte;
+La estación ubicada en el barrio obrero y la estaciuón Ermita ubicada en el barrio San Pedro ambas en la zona centro; 
+la estación transitoria EDB - Navarro ubicada en el barrio Poblado en la zona oriente; la estación base Aérea, ubicada en el acuaparque de la
+Caña en zona nororiente; la estación Pance ubicadada en la Zona Rural; la estación Univalle ubicada en el
+barrio Meléndez en la zona sur; la estación compartir ubicada en el Barrio Compartir en la zona oriente y la estación
+Cañaveralejo ubicada en la estación SITM del MIO en la zona suroccidente.
 
-Para conocer más sobre la temática, se invita a la comunidad interesada a consultar los boletines de calidad del aire, los cuales se encuentran cargados en el portal del DAGMA, sección grupo de Calidad del Aire: http://www.cali.gov.co/dagma/publicaciones/sistema_de_vigilancia_de_calidad_del_aire_de_cali_svcac_pub
+El presente trabajo, realizará un análisis de la captura de datos de la estación _La Flora_, la cual 
+es una estación automática que reporta información horaria al centro de control del DAGMA. 
+Esta estación, mide los niveles de Material Particulado Menor a 10 micrómetros (PM10), Dióxido de Azufre (SO2), 
+Dióxido de Nitrógeno (NO2), Monóxido de Carbono (CO), Ozono (O3) y variables meteorológicas 
+como velocidad del viento, dirección del viento, temperatura, humedad, radiación solar y precipitación. El
+proceso de preparación y análisis de los datos seguirá la siguiente estructura:
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+1. **_Carga y exploración_**: Se incluirá el archivo de datos y se identificarán las características del conjunto de datos
+2. **_Limpieza de datos_**: A partir de la exploración, se definirán los procedimientos para la limpieza de datos para facilitar el análisis
+3. **_Creación de la vista minable_**: Se establecerán los conjuntos de datos finales y su correspondiente análisis
+4. **_Conclusiones e infografía_**: Se compilará el conocimiento adquirido y las cifras de interés adquiridas.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+# 1. Carga y exploración
 
-## Estructura del documento
+### Tablas de resumen
+Para los procedimientos de carga y exploración, se emplearán las herramientas
+RStudio y RapidMiner. Inicialmente, se realiza la carga de archivos con el
+fin de resumir las características generales de los datos.
 
-
-# 2. Carga y exploración
-
-
-```{r , echo=F, eval= T}
+```{r , echo=T, eval= T}
 datos_base_flora<-read.csv(file="data/dataCAFlora.csv",
                  header = TRUE,sep = ",", dec = ".",fileEncoding = "latin1")
-str(datos_base_flora,vec.len=1)
-
-summary(datos_base_flora[1:3])
-
+str(datos_base_flora,vec.len=0)
 ```
 
+El conjunto de datos contiene un total 84.629 observaciones con 12 variables. La descripción
+de las variables se relaciona a continuación:
+
+| Variable                  | Tipo de variable  | Descripción                                                  |
+|---------------------------|-------------------|--------------------------------------------------------------|
+| Fecha & Hora              | Fecha             | Fecha y hora de la captura del senso de polutantes           |
+| PM10 (ug/m3)              | Contínua          | Concentración de Material Particulado Menor a 10 micrómetros |
+| SO2 (ug/m3)               | Contínua          | Concentración de Dióxido de Azufre                           |
+| NO2  (ug/m3)              | Contínua          | Concentración de Dióxido de Nitrógeno                        |
+| CO (ug/m3)                | Contínua          | Concentración de Monóxido de Carbono                         |
+| O3 (ug/m3)                | Contínua          | Concentración de Ozono                                       |
+| Vel Viento (m/s)          | Contínua          | Velocidad del viento en metros por segundo                   |
+| Dir Viento (Grados)       | Contínua          | Dirección del viento                                         |
+| Temperatura (C°)          | Contínua          | Temperatura en grados celsius                                |
+| Humedad (%)               | Contínua          | Porcentaje de humedad                                        |
+| Radiacion Solar (Watt/M2) | Contínua          | Radiación Solar                                              |
+| Lluvia (mm)               | Contínua          | Cantidad de precipitaciones                                  |}
+
+```{r , echo=T, eval= T}
+summary(datos_base_flora[1:3])
+```
+
+```{r , echo=T, eval= T}
+summary(datos_base_flora[4:6])
+```
+
+```{r , echo=T, eval= T}
+summary(datos_base_flora[7:9])
+```
+
+```{r , echo=T, eval= T}
+summary(datos_base_flora[10:12])
+```
+
+El DAGMA mediante el grupo de calidad del aire en el transcurso de los años ha trabajado en robustecer el sistema de calidad del aire para garantizar la continuidad en los datos, sin embargo es normal que los sistemas de monitoreo de calidad del aire presenten discontinuidad en los datos (datos faltantes o espacios en blanco) debido a dos situaciones: la primera corresponde a las anomalías que se dan en las estaciones de monitoreo, tales como: Fallas en los equipos, falta de energía eléctrica en la zona, hurto de equipos o cableado, mantenimiento o cambio de equipos, etc y la segunda causa corresponde a la inclusión o exclusión de algunos contaminantes o variables meteorológicas, según criterio de los expertos y característica de la zona a monitorear.
 
 ```{r , echo=F, eval= T}
 library(psych)
@@ -59,55 +120,16 @@ estadisticas <- describe(datos_base_flora)
 estadisticas$mean
 ```
 
-Información de la Entidad
-Área o dependencia	Departamento Administrativo de Gestión del Medio Ambiental - DAGMA
-Nombre de la Entidad	Alcaldía Municipal de Santiago de Cali
-Departamento	Valle del Cauca
-Municipio	Cali
-Orden	Territorial
-Sector	Ambiente y Desarrollo Sostenible
 
-Información de Datos
-Idioma	Español
-Cobertura Geográfica	Municipal
-Frecuencia de Actualización	Anual
-Fecha Emisión (aaaa-mm-dd)	2016-12-13
-
-Filas
-    84,6K
-Columnas
-    12
-Cada fila es un
-    Registro horario
-
-Fecha & Hora	
-PM10 (ug/m3)	
-SO2 (ug/m3)	
-NO2 (ug/m3)	
-CO (ug/m3)	
-O3 (ug/m3)	
-Vel Viento (m/s)	
-Dir Viento (Grados)	
-Temperatura (C°)	
-Humedad (%)	
-Radiacion Solar (Watt/M2)	
-Lluvia (mm)	
-
-	
-
-### Tabla resumen
-```{r , echo=FALSE}
-plot(pressure)
-```
 
 ### Métricas de tendencia central
 ### Métricas de dispersión
 ### Visualización de métricas de dispersión
 ### Análisis de las visualizaciones
 ### Análisis de Correlación
-### Recuerde incluir análisis de todo lo visualizado y no solo el gráfico
 
-# 3. Limpieza de datos
+
+# 2. Limpieza de datos
 
 ### Reconocimiento y tratamiento de atributos con valores únicos o distintos
 ### Reconocimiento y tratamiento de atributos con valores faltantes
@@ -115,21 +137,14 @@ plot(pressure)
 ### Reconocimiento y tratamiento de registros atípicos
 ### Reconocimiento y tratamiento de atributos redundantes
 
-# 4. Creación de la vista minable
+# 3. Creación de la vista minable
 
 ### Generación de variables derivadas tipo 1 y 2
 ### Normalización de al menos un atributo
 ### Discretización de al menos un atributo
 ### Numerización 1 a n de al menos un atributo
 
-# 5. Conclusiones e Infografía
+# 4. Conclusiones e Infografía
 
+# Referencias
 
-
-You can also embed plots, for example:
-
-```{r , echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
