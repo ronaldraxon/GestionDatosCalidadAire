@@ -1,0 +1,552 @@
+<?xml version="1.0" encoding="UTF-8"?><process version="9.2.001">
+  <context>
+    <input/>
+    <output/>
+    <macros/>
+  </context>
+  <operator activated="true" class="process" compatibility="9.2.001" expanded="true" name="Process">
+    <parameter key="logverbosity" value="init"/>
+    <parameter key="random_seed" value="2001"/>
+    <parameter key="send_mail" value="never"/>
+    <parameter key="notification_email" value=""/>
+    <parameter key="process_duration_for_mail" value="30"/>
+    <parameter key="encoding" value="SYSTEM"/>
+    <process expanded="true">
+      <operator activated="true" class="read_csv" compatibility="9.2.001" expanded="true" height="68" name="Leer Archivo" width="90" x="45" y="34">
+        <parameter key="csv_file" value="/media/raxon/WindowsData/Shared_raxonserver/workAndStudy/magister/subjects/Gestion de datos(Data Management)/GestionDatosCalidadAire/data/dataCAFlora.csv"/>
+        <parameter key="column_separators" value=","/>
+        <parameter key="trim_lines" value="false"/>
+        <parameter key="use_quotes" value="true"/>
+        <parameter key="quotes_character" value="&quot;"/>
+        <parameter key="escape_character" value="\"/>
+        <parameter key="skip_comments" value="true"/>
+        <parameter key="comment_characters" value="#"/>
+        <parameter key="starting_row" value="1"/>
+        <parameter key="parse_numbers" value="true"/>
+        <parameter key="decimal_character" value="."/>
+        <parameter key="grouped_digits" value="false"/>
+        <parameter key="grouping_character" value=","/>
+        <parameter key="infinity_representation" value=""/>
+        <parameter key="date_format" value="dd/MM/yyyy HH:mm"/>
+        <parameter key="first_row_as_names" value="true"/>
+        <list key="annotations"/>
+        <parameter key="time_zone" value="SYSTEM"/>
+        <parameter key="locale" value="English (United States)"/>
+        <parameter key="encoding" value="UTF-8"/>
+        <parameter key="read_all_values_as_polynominal" value="false"/>
+        <list key="data_set_meta_data_information">
+          <parameter key="0" value="Fecha &amp; Hora.true.date_time.attribute"/>
+          <parameter key="1" value="PM10 (ug/m3).true.real.attribute"/>
+          <parameter key="2" value="SO2  (ug/m3).true.real.attribute"/>
+          <parameter key="3" value="NO2  (ug/m3).true.real.attribute"/>
+          <parameter key="4" value="CO  (ug/m3).true.real.attribute"/>
+          <parameter key="5" value="O3  (ug/m3).true.real.attribute"/>
+          <parameter key="6" value="Vel Viento  (m/s).true.real.attribute"/>
+          <parameter key="7" value="Dir Viento (Grados).true.real.attribute"/>
+          <parameter key="8" value="Temperatura (C°).true.real.attribute"/>
+          <parameter key="9" value="Humedad (%).true.real.attribute"/>
+          <parameter key="10" value="Radiacion Solar (Watt/M2).true.real.attribute"/>
+          <parameter key="11" value="Lluvia (mm).true.integer.attribute"/>
+        </list>
+        <parameter key="read_not_matching_values_as_missings" value="true"/>
+        <parameter key="datamanagement" value="double_array"/>
+        <parameter key="data_management" value="auto"/>
+      </operator>
+      <operator activated="true" class="remove_duplicates" compatibility="9.2.001" expanded="true" height="103" name="Remover Duplicados por Fecha" width="90" x="246" y="34">
+        <parameter key="attribute_filter_type" value="single"/>
+        <parameter key="attribute" value="Fecha &amp; Hora"/>
+        <parameter key="attributes" value=""/>
+        <parameter key="use_except_expression" value="false"/>
+        <parameter key="value_type" value="attribute_value"/>
+        <parameter key="use_value_type_exception" value="false"/>
+        <parameter key="except_value_type" value="time"/>
+        <parameter key="block_type" value="attribute_block"/>
+        <parameter key="use_block_type_exception" value="false"/>
+        <parameter key="except_block_type" value="value_matrix_row_start"/>
+        <parameter key="invert_selection" value="false"/>
+        <parameter key="include_special_attributes" value="false"/>
+        <parameter key="treat_missing_values_as_duplicates" value="false"/>
+      </operator>
+      <operator activated="true" class="multiply" compatibility="9.2.001" expanded="true" height="187" name="Multi Conjunto B" width="90" x="514" y="391"/>
+      <operator activated="true" class="subprocess" compatibility="9.2.001" expanded="true" height="82" name="SepararO3B" width="90" x="849" y="646">
+        <process expanded="true">
+          <operator activated="true" class="select_attributes" compatibility="9.2.001" expanded="true" height="82" name="Seleccionar O3 (2)" width="90" x="179" y="34">
+            <parameter key="attribute_filter_type" value="subset"/>
+            <parameter key="attribute" value=""/>
+            <parameter key="attributes" value="Dir Viento (Grados)|Fecha &amp; Hora|Humedad (%)|Lluvia (mm)|Radiacion Solar (Watt/M2)|Temperatura (C°)|Vel Viento  (m/s)|O3  (ug/m3)"/>
+            <parameter key="use_except_expression" value="false"/>
+            <parameter key="value_type" value="attribute_value"/>
+            <parameter key="use_value_type_exception" value="false"/>
+            <parameter key="except_value_type" value="time"/>
+            <parameter key="block_type" value="attribute_block"/>
+            <parameter key="use_block_type_exception" value="false"/>
+            <parameter key="except_block_type" value="value_matrix_row_start"/>
+            <parameter key="invert_selection" value="false"/>
+            <parameter key="include_special_attributes" value="false"/>
+          </operator>
+          <operator activated="true" class="filter_examples" compatibility="9.2.001" expanded="true" height="103" name="RemoverAusentes (12)" width="90" x="447" y="34">
+            <parameter key="parameter_expression" value=""/>
+            <parameter key="condition_class" value="no_missing_attributes"/>
+            <parameter key="invert_filter" value="false"/>
+            <list key="filters_list"/>
+            <parameter key="filters_logic_and" value="true"/>
+            <parameter key="filters_check_metadata" value="true"/>
+          </operator>
+          <operator activated="true" class="sort" compatibility="9.2.001" expanded="true" height="82" name="OrdernarPorFecha (12)" width="90" x="648" y="34">
+            <parameter key="attribute_name" value="Fecha &amp; Hora"/>
+            <parameter key="sorting_direction" value="increasing"/>
+          </operator>
+          <connect from_port="in 1" to_op="Seleccionar O3 (2)" to_port="example set input"/>
+          <connect from_op="Seleccionar O3 (2)" from_port="example set output" to_op="RemoverAusentes (12)" to_port="example set input"/>
+          <connect from_op="RemoverAusentes (12)" from_port="example set output" to_op="OrdernarPorFecha (12)" to_port="example set input"/>
+          <connect from_op="OrdernarPorFecha (12)" from_port="example set output" to_port="out 1"/>
+          <portSpacing port="source_in 1" spacing="0"/>
+          <portSpacing port="source_in 2" spacing="0"/>
+          <portSpacing port="sink_out 1" spacing="0"/>
+          <portSpacing port="sink_out 2" spacing="0"/>
+        </process>
+      </operator>
+      <operator activated="true" class="subprocess" compatibility="9.2.001" expanded="true" height="82" name="SepararCOB" width="90" x="715" y="595">
+        <process expanded="true">
+          <operator activated="true" class="select_attributes" compatibility="9.2.001" expanded="true" height="82" name="Seleccionar CO (2)" width="90" x="179" y="34">
+            <parameter key="attribute_filter_type" value="subset"/>
+            <parameter key="attribute" value=""/>
+            <parameter key="attributes" value="Dir Viento (Grados)|Fecha &amp; Hora|Humedad (%)|Lluvia (mm)|Radiacion Solar (Watt/M2)|Temperatura (C°)|Vel Viento  (m/s)|CO  (ug/m3)"/>
+            <parameter key="use_except_expression" value="false"/>
+            <parameter key="value_type" value="attribute_value"/>
+            <parameter key="use_value_type_exception" value="false"/>
+            <parameter key="except_value_type" value="time"/>
+            <parameter key="block_type" value="attribute_block"/>
+            <parameter key="use_block_type_exception" value="false"/>
+            <parameter key="except_block_type" value="value_matrix_row_start"/>
+            <parameter key="invert_selection" value="false"/>
+            <parameter key="include_special_attributes" value="false"/>
+          </operator>
+          <operator activated="true" class="filter_examples" compatibility="9.2.001" expanded="true" height="103" name="RemoverAusentes (11)" width="90" x="380" y="34">
+            <parameter key="parameter_expression" value=""/>
+            <parameter key="condition_class" value="no_missing_attributes"/>
+            <parameter key="invert_filter" value="false"/>
+            <list key="filters_list"/>
+            <parameter key="filters_logic_and" value="true"/>
+            <parameter key="filters_check_metadata" value="true"/>
+          </operator>
+          <operator activated="true" class="sort" compatibility="9.2.001" expanded="true" height="82" name="OrdernarPorFecha (11)" width="90" x="581" y="34">
+            <parameter key="attribute_name" value="Fecha &amp; Hora"/>
+            <parameter key="sorting_direction" value="increasing"/>
+          </operator>
+          <connect from_port="in 1" to_op="Seleccionar CO (2)" to_port="example set input"/>
+          <connect from_op="Seleccionar CO (2)" from_port="example set output" to_op="RemoverAusentes (11)" to_port="example set input"/>
+          <connect from_op="RemoverAusentes (11)" from_port="example set output" to_op="OrdernarPorFecha (11)" to_port="example set input"/>
+          <connect from_op="OrdernarPorFecha (11)" from_port="example set output" to_port="out 1"/>
+          <portSpacing port="source_in 1" spacing="0"/>
+          <portSpacing port="source_in 2" spacing="0"/>
+          <portSpacing port="sink_out 1" spacing="0"/>
+          <portSpacing port="sink_out 2" spacing="0"/>
+        </process>
+      </operator>
+      <operator activated="true" class="subprocess" compatibility="9.2.001" expanded="true" height="82" name="SepararNO2B" width="90" x="849" y="544">
+        <process expanded="true">
+          <operator activated="true" class="select_attributes" compatibility="9.2.001" expanded="true" height="82" name="Seleccionar NO2 (2)" width="90" x="179" y="34">
+            <parameter key="attribute_filter_type" value="subset"/>
+            <parameter key="attribute" value=""/>
+            <parameter key="attributes" value="Dir Viento (Grados)|Fecha &amp; Hora|Humedad (%)|Lluvia (mm)|Radiacion Solar (Watt/M2)|Temperatura (C°)|Vel Viento  (m/s)|NO2  (ug/m3)"/>
+            <parameter key="use_except_expression" value="false"/>
+            <parameter key="value_type" value="attribute_value"/>
+            <parameter key="use_value_type_exception" value="false"/>
+            <parameter key="except_value_type" value="time"/>
+            <parameter key="block_type" value="attribute_block"/>
+            <parameter key="use_block_type_exception" value="false"/>
+            <parameter key="except_block_type" value="value_matrix_row_start"/>
+            <parameter key="invert_selection" value="false"/>
+            <parameter key="include_special_attributes" value="false"/>
+          </operator>
+          <operator activated="true" class="filter_examples" compatibility="9.2.001" expanded="true" height="103" name="RemoverAusentes (10)" width="90" x="447" y="34">
+            <parameter key="parameter_expression" value=""/>
+            <parameter key="condition_class" value="no_missing_attributes"/>
+            <parameter key="invert_filter" value="false"/>
+            <list key="filters_list"/>
+            <parameter key="filters_logic_and" value="true"/>
+            <parameter key="filters_check_metadata" value="true"/>
+          </operator>
+          <operator activated="true" class="sort" compatibility="9.2.001" expanded="true" height="82" name="OrdernarPorFecha (10)" width="90" x="648" y="34">
+            <parameter key="attribute_name" value="Fecha &amp; Hora"/>
+            <parameter key="sorting_direction" value="increasing"/>
+          </operator>
+          <connect from_port="in 1" to_op="Seleccionar NO2 (2)" to_port="example set input"/>
+          <connect from_op="Seleccionar NO2 (2)" from_port="example set output" to_op="RemoverAusentes (10)" to_port="example set input"/>
+          <connect from_op="RemoverAusentes (10)" from_port="example set output" to_op="OrdernarPorFecha (10)" to_port="example set input"/>
+          <connect from_op="OrdernarPorFecha (10)" from_port="example set output" to_port="out 1"/>
+          <portSpacing port="source_in 1" spacing="0"/>
+          <portSpacing port="source_in 2" spacing="0"/>
+          <portSpacing port="sink_out 1" spacing="0"/>
+          <portSpacing port="sink_out 2" spacing="0"/>
+        </process>
+      </operator>
+      <operator activated="true" class="subprocess" compatibility="9.2.001" expanded="true" height="82" name="SepararSO2B" width="90" x="715" y="493">
+        <process expanded="true">
+          <operator activated="true" class="select_attributes" compatibility="9.2.001" expanded="true" height="82" name="Seleccionar S02 (2)" width="90" x="179" y="34">
+            <parameter key="attribute_filter_type" value="subset"/>
+            <parameter key="attribute" value=""/>
+            <parameter key="attributes" value="Dir Viento (Grados)|Fecha &amp; Hora|Humedad (%)|Lluvia (mm)|Radiacion Solar (Watt/M2)|Temperatura (C°)|Vel Viento  (m/s)|SO2  (ug/m3)"/>
+            <parameter key="use_except_expression" value="false"/>
+            <parameter key="value_type" value="attribute_value"/>
+            <parameter key="use_value_type_exception" value="false"/>
+            <parameter key="except_value_type" value="time"/>
+            <parameter key="block_type" value="attribute_block"/>
+            <parameter key="use_block_type_exception" value="false"/>
+            <parameter key="except_block_type" value="value_matrix_row_start"/>
+            <parameter key="invert_selection" value="false"/>
+            <parameter key="include_special_attributes" value="false"/>
+          </operator>
+          <operator activated="true" class="filter_examples" compatibility="9.2.001" expanded="true" height="103" name="RemoverAusentes (9)" width="90" x="447" y="34">
+            <parameter key="parameter_expression" value=""/>
+            <parameter key="condition_class" value="no_missing_attributes"/>
+            <parameter key="invert_filter" value="false"/>
+            <list key="filters_list"/>
+            <parameter key="filters_logic_and" value="true"/>
+            <parameter key="filters_check_metadata" value="true"/>
+          </operator>
+          <operator activated="true" class="sort" compatibility="9.2.001" expanded="true" height="82" name="OrdernarPorFecha (9)" width="90" x="648" y="34">
+            <parameter key="attribute_name" value="Fecha &amp; Hora"/>
+            <parameter key="sorting_direction" value="increasing"/>
+          </operator>
+          <connect from_port="in 1" to_op="Seleccionar S02 (2)" to_port="example set input"/>
+          <connect from_op="Seleccionar S02 (2)" from_port="example set output" to_op="RemoverAusentes (9)" to_port="example set input"/>
+          <connect from_op="RemoverAusentes (9)" from_port="example set output" to_op="OrdernarPorFecha (9)" to_port="example set input"/>
+          <connect from_op="OrdernarPorFecha (9)" from_port="example set output" to_port="out 1"/>
+          <portSpacing port="source_in 1" spacing="0"/>
+          <portSpacing port="source_in 2" spacing="0"/>
+          <portSpacing port="sink_out 1" spacing="0"/>
+          <portSpacing port="sink_out 2" spacing="0"/>
+        </process>
+      </operator>
+      <operator activated="true" class="subprocess" compatibility="9.2.001" expanded="true" height="82" name="SepararPM10B" width="90" x="849" y="442">
+        <process expanded="true">
+          <operator activated="true" class="select_attributes" compatibility="9.2.001" expanded="true" height="82" name="Seleccionar PM10 (2)" width="90" x="179" y="34">
+            <parameter key="attribute_filter_type" value="subset"/>
+            <parameter key="attribute" value=""/>
+            <parameter key="attributes" value="Dir Viento (Grados)|Fecha &amp; Hora|Humedad (%)|Lluvia (mm)|PM10 (ug/m3)|Radiacion Solar (Watt/M2)|Temperatura (C°)|Vel Viento  (m/s)"/>
+            <parameter key="use_except_expression" value="false"/>
+            <parameter key="value_type" value="attribute_value"/>
+            <parameter key="use_value_type_exception" value="false"/>
+            <parameter key="except_value_type" value="time"/>
+            <parameter key="block_type" value="attribute_block"/>
+            <parameter key="use_block_type_exception" value="false"/>
+            <parameter key="except_block_type" value="value_matrix_row_start"/>
+            <parameter key="invert_selection" value="false"/>
+            <parameter key="include_special_attributes" value="false"/>
+          </operator>
+          <operator activated="true" class="filter_examples" compatibility="9.2.001" expanded="true" height="103" name="RemoverAusentes (8)" width="90" x="380" y="34">
+            <parameter key="parameter_expression" value=""/>
+            <parameter key="condition_class" value="no_missing_attributes"/>
+            <parameter key="invert_filter" value="false"/>
+            <list key="filters_list"/>
+            <parameter key="filters_logic_and" value="true"/>
+            <parameter key="filters_check_metadata" value="true"/>
+          </operator>
+          <operator activated="true" class="sort" compatibility="9.2.001" expanded="true" height="82" name="OrdernarPorFecha (8)" width="90" x="581" y="34">
+            <parameter key="attribute_name" value="Fecha &amp; Hora"/>
+            <parameter key="sorting_direction" value="increasing"/>
+          </operator>
+          <connect from_port="in 1" to_op="Seleccionar PM10 (2)" to_port="example set input"/>
+          <connect from_op="Seleccionar PM10 (2)" from_port="example set output" to_op="RemoverAusentes (8)" to_port="example set input"/>
+          <connect from_op="RemoverAusentes (8)" from_port="example set output" to_op="OrdernarPorFecha (8)" to_port="example set input"/>
+          <connect from_op="OrdernarPorFecha (8)" from_port="example set output" to_port="out 1"/>
+          <portSpacing port="source_in 1" spacing="0"/>
+          <portSpacing port="source_in 2" spacing="0"/>
+          <portSpacing port="sink_out 1" spacing="0"/>
+          <portSpacing port="sink_out 2" spacing="0"/>
+        </process>
+      </operator>
+      <operator activated="true" class="subprocess" compatibility="9.2.001" expanded="true" height="82" name="SepararPolutB" width="90" x="715" y="391">
+        <process expanded="true">
+          <operator activated="true" class="select_attributes" compatibility="9.2.001" expanded="true" height="82" name="Seleccionar Polutantes (2)" width="90" x="179" y="34">
+            <parameter key="attribute_filter_type" value="subset"/>
+            <parameter key="attribute" value=""/>
+            <parameter key="attributes" value="Fecha &amp; Hora|PM10 (ug/m3)|CO  (ug/m3)|NO2  (ug/m3)|O3  (ug/m3)|SO2  (ug/m3)"/>
+            <parameter key="use_except_expression" value="false"/>
+            <parameter key="value_type" value="attribute_value"/>
+            <parameter key="use_value_type_exception" value="false"/>
+            <parameter key="except_value_type" value="time"/>
+            <parameter key="block_type" value="attribute_block"/>
+            <parameter key="use_block_type_exception" value="false"/>
+            <parameter key="except_block_type" value="value_matrix_row_start"/>
+            <parameter key="invert_selection" value="false"/>
+            <parameter key="include_special_attributes" value="false"/>
+          </operator>
+          <operator activated="true" class="filter_examples" compatibility="9.2.001" expanded="true" height="103" name="RemoverAusentes (7)" width="90" x="447" y="34">
+            <parameter key="parameter_expression" value=""/>
+            <parameter key="condition_class" value="no_missing_attributes"/>
+            <parameter key="invert_filter" value="false"/>
+            <list key="filters_list"/>
+            <parameter key="filters_logic_and" value="true"/>
+            <parameter key="filters_check_metadata" value="true"/>
+          </operator>
+          <operator activated="true" class="sort" compatibility="9.2.001" expanded="true" height="82" name="OrdernarPorFecha (7)" width="90" x="648" y="34">
+            <parameter key="attribute_name" value="Fecha &amp; Hora"/>
+            <parameter key="sorting_direction" value="increasing"/>
+          </operator>
+          <connect from_port="in 1" to_op="Seleccionar Polutantes (2)" to_port="example set input"/>
+          <connect from_op="Seleccionar Polutantes (2)" from_port="example set output" to_op="RemoverAusentes (7)" to_port="example set input"/>
+          <connect from_op="RemoverAusentes (7)" from_port="example set output" to_op="OrdernarPorFecha (7)" to_port="example set input"/>
+          <connect from_op="OrdernarPorFecha (7)" from_port="example set output" to_port="out 1"/>
+          <portSpacing port="source_in 1" spacing="0"/>
+          <portSpacing port="source_in 2" spacing="0"/>
+          <portSpacing port="sink_out 1" spacing="0"/>
+          <portSpacing port="sink_out 2" spacing="0"/>
+        </process>
+      </operator>
+      <operator activated="true" class="multiply" compatibility="9.2.001" expanded="true" height="187" name="Multi Conjunto A" width="90" x="514" y="34"/>
+      <operator activated="true" class="subprocess" compatibility="9.2.001" expanded="true" height="82" name="SepararO3A" width="90" x="849" y="289">
+        <process expanded="true">
+          <operator activated="true" class="select_attributes" compatibility="9.2.001" expanded="true" height="82" name="Seleccionar O3" width="90" x="179" y="34">
+            <parameter key="attribute_filter_type" value="subset"/>
+            <parameter key="attribute" value=""/>
+            <parameter key="attributes" value="Dir Viento (Grados)|Fecha &amp; Hora|Humedad (%)|Lluvia (mm)|Radiacion Solar (Watt/M2)|Temperatura (C°)|Vel Viento  (m/s)|O3  (ug/m3)"/>
+            <parameter key="use_except_expression" value="false"/>
+            <parameter key="value_type" value="attribute_value"/>
+            <parameter key="use_value_type_exception" value="false"/>
+            <parameter key="except_value_type" value="time"/>
+            <parameter key="block_type" value="attribute_block"/>
+            <parameter key="use_block_type_exception" value="false"/>
+            <parameter key="except_block_type" value="value_matrix_row_start"/>
+            <parameter key="invert_selection" value="false"/>
+            <parameter key="include_special_attributes" value="false"/>
+          </operator>
+          <operator activated="true" class="filter_examples" compatibility="9.2.001" expanded="true" height="103" name="RemoverAusentes (6)" width="90" x="447" y="34">
+            <parameter key="parameter_expression" value=""/>
+            <parameter key="condition_class" value="no_missing_attributes"/>
+            <parameter key="invert_filter" value="false"/>
+            <list key="filters_list"/>
+            <parameter key="filters_logic_and" value="true"/>
+            <parameter key="filters_check_metadata" value="true"/>
+          </operator>
+          <operator activated="true" class="sort" compatibility="9.2.001" expanded="true" height="82" name="OrdernarPorFecha (6)" width="90" x="648" y="34">
+            <parameter key="attribute_name" value="Fecha &amp; Hora"/>
+            <parameter key="sorting_direction" value="increasing"/>
+          </operator>
+          <connect from_port="in 1" to_op="Seleccionar O3" to_port="example set input"/>
+          <connect from_op="Seleccionar O3" from_port="example set output" to_op="RemoverAusentes (6)" to_port="example set input"/>
+          <connect from_op="RemoverAusentes (6)" from_port="example set output" to_op="OrdernarPorFecha (6)" to_port="example set input"/>
+          <connect from_op="OrdernarPorFecha (6)" from_port="example set output" to_port="out 1"/>
+          <portSpacing port="source_in 1" spacing="0"/>
+          <portSpacing port="source_in 2" spacing="0"/>
+          <portSpacing port="sink_out 1" spacing="0"/>
+          <portSpacing port="sink_out 2" spacing="0"/>
+        </process>
+      </operator>
+      <operator activated="true" class="subprocess" compatibility="9.2.001" expanded="true" height="82" name="SepararCOA" width="90" x="715" y="238">
+        <process expanded="true">
+          <operator activated="true" class="select_attributes" compatibility="9.2.001" expanded="true" height="82" name="Seleccionar CO" width="90" x="179" y="34">
+            <parameter key="attribute_filter_type" value="subset"/>
+            <parameter key="attribute" value=""/>
+            <parameter key="attributes" value="Dir Viento (Grados)|Fecha &amp; Hora|Humedad (%)|Lluvia (mm)|Radiacion Solar (Watt/M2)|Temperatura (C°)|Vel Viento  (m/s)|CO  (ug/m3)"/>
+            <parameter key="use_except_expression" value="false"/>
+            <parameter key="value_type" value="attribute_value"/>
+            <parameter key="use_value_type_exception" value="false"/>
+            <parameter key="except_value_type" value="time"/>
+            <parameter key="block_type" value="attribute_block"/>
+            <parameter key="use_block_type_exception" value="false"/>
+            <parameter key="except_block_type" value="value_matrix_row_start"/>
+            <parameter key="invert_selection" value="false"/>
+            <parameter key="include_special_attributes" value="false"/>
+          </operator>
+          <operator activated="true" class="filter_examples" compatibility="9.2.001" expanded="true" height="103" name="RemoverAusentes (5)" width="90" x="380" y="34">
+            <parameter key="parameter_expression" value=""/>
+            <parameter key="condition_class" value="no_missing_attributes"/>
+            <parameter key="invert_filter" value="false"/>
+            <list key="filters_list"/>
+            <parameter key="filters_logic_and" value="true"/>
+            <parameter key="filters_check_metadata" value="true"/>
+          </operator>
+          <operator activated="true" class="sort" compatibility="9.2.001" expanded="true" height="82" name="OrdernarPorFecha (5)" width="90" x="581" y="34">
+            <parameter key="attribute_name" value="Fecha &amp; Hora"/>
+            <parameter key="sorting_direction" value="increasing"/>
+          </operator>
+          <connect from_port="in 1" to_op="Seleccionar CO" to_port="example set input"/>
+          <connect from_op="Seleccionar CO" from_port="example set output" to_op="RemoverAusentes (5)" to_port="example set input"/>
+          <connect from_op="RemoverAusentes (5)" from_port="example set output" to_op="OrdernarPorFecha (5)" to_port="example set input"/>
+          <connect from_op="OrdernarPorFecha (5)" from_port="example set output" to_port="out 1"/>
+          <portSpacing port="source_in 1" spacing="0"/>
+          <portSpacing port="source_in 2" spacing="0"/>
+          <portSpacing port="sink_out 1" spacing="0"/>
+          <portSpacing port="sink_out 2" spacing="0"/>
+        </process>
+      </operator>
+      <operator activated="true" class="subprocess" compatibility="9.2.001" expanded="true" height="82" name="SepararNO2A" width="90" x="849" y="187">
+        <process expanded="true">
+          <operator activated="true" class="select_attributes" compatibility="9.2.001" expanded="true" height="82" name="Seleccionar NO2" width="90" x="179" y="34">
+            <parameter key="attribute_filter_type" value="subset"/>
+            <parameter key="attribute" value=""/>
+            <parameter key="attributes" value="Dir Viento (Grados)|Fecha &amp; Hora|Humedad (%)|Lluvia (mm)|Radiacion Solar (Watt/M2)|Temperatura (C°)|Vel Viento  (m/s)|NO2  (ug/m3)"/>
+            <parameter key="use_except_expression" value="false"/>
+            <parameter key="value_type" value="attribute_value"/>
+            <parameter key="use_value_type_exception" value="false"/>
+            <parameter key="except_value_type" value="time"/>
+            <parameter key="block_type" value="attribute_block"/>
+            <parameter key="use_block_type_exception" value="false"/>
+            <parameter key="except_block_type" value="value_matrix_row_start"/>
+            <parameter key="invert_selection" value="false"/>
+            <parameter key="include_special_attributes" value="false"/>
+          </operator>
+          <operator activated="true" class="filter_examples" compatibility="9.2.001" expanded="true" height="103" name="RemoverAusentes (4)" width="90" x="380" y="34">
+            <parameter key="parameter_expression" value=""/>
+            <parameter key="condition_class" value="no_missing_attributes"/>
+            <parameter key="invert_filter" value="false"/>
+            <list key="filters_list"/>
+            <parameter key="filters_logic_and" value="true"/>
+            <parameter key="filters_check_metadata" value="true"/>
+          </operator>
+          <operator activated="true" class="sort" compatibility="9.2.001" expanded="true" height="82" name="OrdernarPorFecha (4)" width="90" x="581" y="34">
+            <parameter key="attribute_name" value="Fecha &amp; Hora"/>
+            <parameter key="sorting_direction" value="increasing"/>
+          </operator>
+          <connect from_port="in 1" to_op="Seleccionar NO2" to_port="example set input"/>
+          <connect from_op="Seleccionar NO2" from_port="example set output" to_op="RemoverAusentes (4)" to_port="example set input"/>
+          <connect from_op="RemoverAusentes (4)" from_port="example set output" to_op="OrdernarPorFecha (4)" to_port="example set input"/>
+          <connect from_op="OrdernarPorFecha (4)" from_port="example set output" to_port="out 1"/>
+          <portSpacing port="source_in 1" spacing="0"/>
+          <portSpacing port="source_in 2" spacing="0"/>
+          <portSpacing port="sink_out 1" spacing="0"/>
+          <portSpacing port="sink_out 2" spacing="0"/>
+        </process>
+      </operator>
+      <operator activated="true" class="subprocess" compatibility="9.2.001" expanded="true" height="82" name="SepararSO2A" width="90" x="715" y="136">
+        <process expanded="true">
+          <operator activated="true" class="select_attributes" compatibility="9.2.001" expanded="true" height="82" name="Seleccionar S02" width="90" x="179" y="34">
+            <parameter key="attribute_filter_type" value="subset"/>
+            <parameter key="attribute" value=""/>
+            <parameter key="attributes" value="Dir Viento (Grados)|Fecha &amp; Hora|Humedad (%)|Lluvia (mm)|Radiacion Solar (Watt/M2)|Temperatura (C°)|Vel Viento  (m/s)|SO2  (ug/m3)"/>
+            <parameter key="use_except_expression" value="false"/>
+            <parameter key="value_type" value="attribute_value"/>
+            <parameter key="use_value_type_exception" value="false"/>
+            <parameter key="except_value_type" value="time"/>
+            <parameter key="block_type" value="attribute_block"/>
+            <parameter key="use_block_type_exception" value="false"/>
+            <parameter key="except_block_type" value="value_matrix_row_start"/>
+            <parameter key="invert_selection" value="false"/>
+            <parameter key="include_special_attributes" value="false"/>
+          </operator>
+          <operator activated="true" class="filter_examples" compatibility="9.2.001" expanded="true" height="103" name="RemoverAusentes (3)" width="90" x="380" y="34">
+            <parameter key="parameter_expression" value=""/>
+            <parameter key="condition_class" value="no_missing_attributes"/>
+            <parameter key="invert_filter" value="false"/>
+            <list key="filters_list"/>
+            <parameter key="filters_logic_and" value="true"/>
+            <parameter key="filters_check_metadata" value="true"/>
+          </operator>
+          <operator activated="true" class="sort" compatibility="9.2.001" expanded="true" height="82" name="OrdernarPorFecha (3)" width="90" x="581" y="34">
+            <parameter key="attribute_name" value="Fecha &amp; Hora"/>
+            <parameter key="sorting_direction" value="increasing"/>
+          </operator>
+          <connect from_port="in 1" to_op="Seleccionar S02" to_port="example set input"/>
+          <connect from_op="Seleccionar S02" from_port="example set output" to_op="RemoverAusentes (3)" to_port="example set input"/>
+          <connect from_op="RemoverAusentes (3)" from_port="example set output" to_op="OrdernarPorFecha (3)" to_port="example set input"/>
+          <connect from_op="OrdernarPorFecha (3)" from_port="example set output" to_port="out 1"/>
+          <portSpacing port="source_in 1" spacing="0"/>
+          <portSpacing port="source_in 2" spacing="0"/>
+          <portSpacing port="sink_out 1" spacing="0"/>
+          <portSpacing port="sink_out 2" spacing="0"/>
+        </process>
+      </operator>
+      <operator activated="true" class="subprocess" compatibility="9.2.001" expanded="true" height="82" name="SepararPM10A" width="90" x="849" y="85">
+        <process expanded="true">
+          <operator activated="true" class="select_attributes" compatibility="9.2.001" expanded="true" height="82" name="Seleccionar PM10" width="90" x="179" y="34">
+            <parameter key="attribute_filter_type" value="subset"/>
+            <parameter key="attribute" value=""/>
+            <parameter key="attributes" value="Dir Viento (Grados)|Fecha &amp; Hora|Humedad (%)|Lluvia (mm)|PM10 (ug/m3)|Radiacion Solar (Watt/M2)|Temperatura (C°)|Vel Viento  (m/s)"/>
+            <parameter key="use_except_expression" value="false"/>
+            <parameter key="value_type" value="attribute_value"/>
+            <parameter key="use_value_type_exception" value="false"/>
+            <parameter key="except_value_type" value="time"/>
+            <parameter key="block_type" value="attribute_block"/>
+            <parameter key="use_block_type_exception" value="false"/>
+            <parameter key="except_block_type" value="value_matrix_row_start"/>
+            <parameter key="invert_selection" value="false"/>
+            <parameter key="include_special_attributes" value="false"/>
+          </operator>
+          <operator activated="true" class="filter_examples" compatibility="9.2.001" expanded="true" height="103" name="RemoverAusentes (2)" width="90" x="380" y="34">
+            <parameter key="parameter_expression" value=""/>
+            <parameter key="condition_class" value="no_missing_attributes"/>
+            <parameter key="invert_filter" value="false"/>
+            <list key="filters_list"/>
+            <parameter key="filters_logic_and" value="true"/>
+            <parameter key="filters_check_metadata" value="true"/>
+          </operator>
+          <operator activated="true" class="sort" compatibility="9.2.001" expanded="true" height="82" name="OrdernarPorFecha (2)" width="90" x="581" y="34">
+            <parameter key="attribute_name" value="Fecha &amp; Hora"/>
+            <parameter key="sorting_direction" value="increasing"/>
+          </operator>
+          <connect from_port="in 1" to_op="Seleccionar PM10" to_port="example set input"/>
+          <connect from_op="Seleccionar PM10" from_port="example set output" to_op="RemoverAusentes (2)" to_port="example set input"/>
+          <connect from_op="RemoverAusentes (2)" from_port="example set output" to_op="OrdernarPorFecha (2)" to_port="example set input"/>
+          <connect from_op="OrdernarPorFecha (2)" from_port="example set output" to_port="out 1"/>
+          <portSpacing port="source_in 1" spacing="0"/>
+          <portSpacing port="source_in 2" spacing="0"/>
+          <portSpacing port="sink_out 1" spacing="0"/>
+          <portSpacing port="sink_out 2" spacing="0"/>
+        </process>
+      </operator>
+      <operator activated="true" class="subprocess" compatibility="9.2.001" expanded="true" height="82" name="SepararPolutA" width="90" x="715" y="34">
+        <process expanded="true">
+          <operator activated="true" class="select_attributes" compatibility="9.2.001" expanded="true" height="82" name="Seleccionar Polut" width="90" x="179" y="34">
+            <parameter key="attribute_filter_type" value="subset"/>
+            <parameter key="attribute" value=""/>
+            <parameter key="attributes" value="CO  (ug/m3)|Fecha &amp; Hora|NO2  (ug/m3)|O3  (ug/m3)|PM10 (ug/m3)|SO2  (ug/m3)"/>
+            <parameter key="use_except_expression" value="false"/>
+            <parameter key="value_type" value="attribute_value"/>
+            <parameter key="use_value_type_exception" value="false"/>
+            <parameter key="except_value_type" value="time"/>
+            <parameter key="block_type" value="attribute_block"/>
+            <parameter key="use_block_type_exception" value="false"/>
+            <parameter key="except_block_type" value="value_matrix_row_start"/>
+            <parameter key="invert_selection" value="false"/>
+            <parameter key="include_special_attributes" value="false"/>
+          </operator>
+          <operator activated="true" class="filter_examples" compatibility="9.2.001" expanded="true" height="103" name="RemoverAusentes" width="90" x="380" y="34">
+            <parameter key="parameter_expression" value=""/>
+            <parameter key="condition_class" value="no_missing_attributes"/>
+            <parameter key="invert_filter" value="false"/>
+            <list key="filters_list"/>
+            <parameter key="filters_logic_and" value="true"/>
+            <parameter key="filters_check_metadata" value="true"/>
+          </operator>
+          <operator activated="true" class="sort" compatibility="9.2.001" expanded="true" height="82" name="OrdernarPorFecha" width="90" x="581" y="34">
+            <parameter key="attribute_name" value="Fecha &amp; Hora"/>
+            <parameter key="sorting_direction" value="increasing"/>
+          </operator>
+          <connect from_port="in 1" to_op="Seleccionar Polut" to_port="example set input"/>
+          <connect from_op="Seleccionar Polut" from_port="example set output" to_op="RemoverAusentes" to_port="example set input"/>
+          <connect from_op="RemoverAusentes" from_port="example set output" to_op="OrdernarPorFecha" to_port="example set input"/>
+          <connect from_op="OrdernarPorFecha" from_port="example set output" to_port="out 1"/>
+          <portSpacing port="source_in 1" spacing="0"/>
+          <portSpacing port="source_in 2" spacing="0"/>
+          <portSpacing port="sink_out 1" spacing="0"/>
+          <portSpacing port="sink_out 2" spacing="0"/>
+        </process>
+      </operator>
+      <connect from_op="Leer Archivo" from_port="output" to_op="Remover Duplicados por Fecha" to_port="example set input"/>
+      <connect from_op="Remover Duplicados por Fecha" from_port="example set output" to_op="Multi Conjunto A" to_port="input"/>
+      <connect from_op="Remover Duplicados por Fecha" from_port="duplicates" to_op="Multi Conjunto B" to_port="input"/>
+      <connect from_op="Multi Conjunto B" from_port="output 1" to_op="SepararPolutB" to_port="in 1"/>
+      <connect from_op="Multi Conjunto B" from_port="output 2" to_op="SepararPM10B" to_port="in 1"/>
+      <connect from_op="Multi Conjunto B" from_port="output 3" to_op="SepararSO2B" to_port="in 1"/>
+      <connect from_op="Multi Conjunto B" from_port="output 4" to_op="SepararNO2B" to_port="in 1"/>
+      <connect from_op="Multi Conjunto B" from_port="output 5" to_op="SepararCOB" to_port="in 1"/>
+      <connect from_op="Multi Conjunto B" from_port="output 6" to_op="SepararO3B" to_port="in 1"/>
+      <connect from_op="Multi Conjunto A" from_port="output 1" to_op="SepararPolutA" to_port="in 1"/>
+      <connect from_op="Multi Conjunto A" from_port="output 2" to_op="SepararPM10A" to_port="in 1"/>
+      <connect from_op="Multi Conjunto A" from_port="output 3" to_op="SepararSO2A" to_port="in 1"/>
+      <connect from_op="Multi Conjunto A" from_port="output 4" to_op="SepararNO2A" to_port="in 1"/>
+      <connect from_op="Multi Conjunto A" from_port="output 5" to_op="SepararCOA" to_port="in 1"/>
+      <connect from_op="Multi Conjunto A" from_port="output 6" to_op="SepararO3A" to_port="in 1"/>
+      <connect from_op="SepararPM10A" from_port="out 1" to_port="result 2"/>
+      <connect from_op="SepararPolutA" from_port="out 1" to_port="result 1"/>
+      <portSpacing port="source_input 1" spacing="0"/>
+      <portSpacing port="sink_result 1" spacing="0"/>
+      <portSpacing port="sink_result 2" spacing="0"/>
+      <portSpacing port="sink_result 3" spacing="0"/>
+      <description align="center" color="yellow" colored="false" height="61" resized="true" width="164" x="746" y="740">Separaci&amp;#243;n de variables y remocion de faltantes</description>
+    </process>
+  </operator>
+</process>

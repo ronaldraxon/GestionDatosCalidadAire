@@ -20,6 +20,8 @@ bibliography: references.bib
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+#install.packages("psych")
+#install.packages("dplyr")
 ```
 
 # Introducción
@@ -73,7 +75,7 @@ RStudio y RapidMiner. Inicialmente, se realiza la carga de archivos con el
 fin de resumir las características generales de los datos.
 
 ```{r , echo=T, eval= T}
-datos_base_flora<-read.csv(file="data/dataCAFlora.csv",
+datos_base_flora<-read.csv(file="data/dataCAFloraPrep.csv",
                  header = TRUE,sep = ",", dec = ".",fileEncoding = "latin1")
 str(datos_base_flora,vec.len=0)
 ```
@@ -123,28 +125,146 @@ summary(datos_base_flora[7:9])
 summary(datos_base_flora[10:12])
 ```
 
-### Métricas de tendencia central
- histogramas
- 
-### Métricas de dispersión
- Diagramas de caja
+### Métricas de tendencia central, forma y dispersión
+Explicar librerira psych, dplyr y los valores que se están calculando
+Explicar librerira psych, dplyr y los valores que se están calculando
+Explicar librerira psych, dplyr y los valores que se están calculando
+Explicar librerira psych, dplyr y los valores que se están calculando
+Explicar librerira psych, dplyr y los valores que se están calculando
+Archivo 1_visualización_exploración.rmp
 
-```{r , echo=T, eval= T}
+```{r , echo=T, eval= T,message=F,warning=F}
 library(psych)
-estadisticas <- describe(datos_base_flora)
+library(dplyr)
+estadisticas <- describe(datos_base_flora[,2:12],na.rm = TRUE, interp=FALSE,skew = TRUE, 
+             ranges = TRUE,trim=.1,check=TRUE,fast=NULL,quant=c(.25,.50,.75),IQR=TRUE)
+estadisticas <- estadisticas%>%mutate(Q0.75 + (1.5* IQR))
+estadisticas <- estadisticas%>%mutate(Q0.25 - (1.5* IQR))
 estadisticas
 ```
 
+bla bla bla PM10
 
- 
-### Análisis de las visualizaciones
+```{r , echo=FALSE, out.width = '50%', out.height='50%'}
+knitr::include_graphics(c("images/hist_explor_PM10.png",
+                          "images/bplot_explor_PM10.png"))
+```
+
+bla bla bla SO2
+
+```{r , echo=FALSE, out.width = '50%', out.height='50%'}
+knitr::include_graphics(c("images/hist_explor_SO2.png",
+                          "images/bplot_explor_SO2.png"))
+```
+
+bla bla bla NO2
+
+```{r , echo=FALSE, out.width = '50%', out.height='50%'}
+knitr::include_graphics(c("images/hist_explor_NO2.png",
+                          "images/bplot_explor_NO2.png"))
+```
+
+bla bla bla CO
+
+```{r , echo=FALSE, out.width = '50%', out.height='50%'}
+knitr::include_graphics(c("images/hist_explor_CO.png",
+                          "images/bplot_explor_CO.png"))
+```
+
+bla bla bla O3
+
+```{r , echo=FALSE, out.width = '50%', out.height='50%'}
+knitr::include_graphics(c("images/hist_explor_O3.png",
+                          "images/bplot_explor_O3.png"))
+```
+
+bla bla bla Velocidad del viento
+
+```{r , echo=FALSE, out.width = '50%', out.height='50%'}
+knitr::include_graphics(c("images/hist_explor_VViento.png",
+                          "images/bplot_explor_VViento.png"))
+```
+
+bla bla bla Dirección del viento
+
+```{r , echo=FALSE, out.width = '50%', out.height='50%'}
+knitr::include_graphics(c("images/hist_explor_DViento.png",
+                          "images/bplot_explor_DViento.png"))
+```
+
+bla bla bla Temperatura
+
+```{r , echo=FALSE, out.width = '50%', out.height='50%'}
+knitr::include_graphics(c("images/hist_explor_Temperatura.png",
+                          "images/bplot_explor_Temperatura.png"
+                          ))
+```
+
+bla bla bla Humedad
+
+```{r , echo=FALSE, out.width = '50%', out.height='50%'}
+knitr::include_graphics(c("images/hist_explor_Humedad.png",
+                          "images/bplot_explor_Humedad.png"
+                          ))
+```
+
+bla bla bla RSolar
+
+```{r , echo=FALSE, out.width = '50%', out.height='50%'}
+knitr::include_graphics(c("images/hist_explor_RSolar.png",
+                          "images/bplot_explor_RSolar.png"
+                          ))
+```
+
+bla bla bla Lluvia
+
+```{r , echo=FALSE, out.width = '50%', out.height='50%'}
+knitr::include_graphics(c("images/hist_explor_Lluvia.png",
+                          "images/bplot_explor_Lluvia.png"
+                          ))
+```
+
 ### Análisis de Correlación
 
 
+bla bla bla correlación 
+
+```{r , echo=FALSE, out.width = '100%', out.height='50%'}
+knitr::include_graphics("images/corr_explor_vars.png")
+```
+
 # 2. Limpieza de datos
 
+Archivo 2_limpieza_datos.rmp
+
 ### Reconocimiento y tratamiento de atributos con valores únicos o distintos
+
+El campo fecha y hora corresponde a un campo único, sin embargo
+existen registros duplicados con dicho campo y se evidencian valores diferentes
+entre los conjuntos resultantes
+
+Conjunto A con 37937 observaciones
+
+```{r , echo=FALSE, out.width = '100%', out.height='50%'}
+knitr::include_graphics("images/conjunto_A.png")
+```
+
+Conjunto B con 46692 observaciones
+
+```{r , echo=FALSE, out.width = '100%', out.height='50%'}
+knitr::include_graphics("images/conjunto_B.png")
+```
+
 ### Reconocimiento y tratamiento de atributos con valores faltantes
+
+Como se pudo apreciar en la exploración 11 de las 12 variables
+contienen valores faltantes. Se realizará la separación de variables por polutantes
+dejando en los subconjuntos los valores de los factores ambientales. Posteriormente,
+se relizará la remoción de los registros con valores faltantes. La razón de no 
+realizar una imputación de los valores será para no viciar los procedimientos de limpieza
+posteriores o los análisis y creación de la vista minable de la sección 3.
+
+
 ### Reconocimiento y tratamiento de atributos con valores atípicos
 ### Reconocimiento y tratamiento de registros atípicos
 ### Reconocimiento y tratamiento de atributos redundantes
